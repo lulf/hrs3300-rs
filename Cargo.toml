@@ -1,0 +1,34 @@
+[package]
+name = "hrs3300"
+version = "0.1.0"
+authors = ["Diego Barrios Romero <eldruin@gmail.com>"]
+repository = "https://github.com/eldruin/hrs3300-rs"
+license = "MIT OR Apache-2.0"
+description = "Platform-agnostic Rust driver for the HRS3300 heart rate sensor/monitor."
+readme = "README.md"
+keywords = ["heart", "rate", "monitor", "sensor", "embedded-hal-driver"]
+categories = ["embedded", "hardware-support", "no-std"]
+homepage = "https://github.com/eldruin/hrs3300-rs"
+documentation = "https://docs.rs/hrs3300"
+include = [
+    "/**/*.rs",
+    "/Cargo.toml",
+    "/README.md",
+    "/CHANGELOG.md",
+    "/LICENSE-MIT",
+    "/LICENSE-APACHE",
+]
+
+[badges]
+travis-ci = { repository = "eldruin/hrs3300-rs", branch = "master" }
+coveralls = { repository = "eldruin/hrs3300-rs", branch = "master", service = "github" }
+
+[dependencies]
+embedded-hal = "0.2"
+
+[dev-dependencies]
+linux-embedded-hal = "0.2"
+embedded-hal-mock = "0.7"
+
+[profile.release]
+lto = true
