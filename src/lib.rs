@@ -18,10 +18,10 @@
 //! body.
 //! The typical heart rate measurement samples the reflected PPG signal at
 //! 25Hz then the results can be read via the I2C bus.
-//! 
+//!
 //! Datasheet:
 //! - [HRS3300](http://files.pine64.org/doc/datasheet/pinetime/HRS3300%20Heart%20Rate%20Sensor.pdf)
-//! 
+//!
 //! <!--
 //! ## Usage examples (see also examples folder)
 //!
@@ -51,3 +51,4 @@ pub struct Hrs3300<I2C> {
     i2c: I2C,
 }
 
+mod device_impl;
