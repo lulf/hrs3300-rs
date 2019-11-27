@@ -37,13 +37,6 @@
 
 extern crate embedded_hal as hal;
 
-/// All possible errors in this crate
-#[derive(Debug)]
-pub enum Error<E> {
-    /// I²C bus error
-    I2C(E),
-}
-
 /// HRS3300 device driver
 #[derive(Debug)]
 pub struct Hrs3300<I2C> {
@@ -58,3 +51,5 @@ struct Config {
 }
 
 mod device_impl;
+mod types;
+pub use types::{ConversionDelay, Error};

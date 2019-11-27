@@ -1,4 +1,4 @@
-use {hal, Config, Error, Hrs3300};
+use {hal, Config, ConversionDelay, Error, Hrs3300};
 
 const DEV_ADDR: u8 = 0x44;
 
@@ -55,6 +55,22 @@ where
     pub fn disable_hrs(&mut self) -> Result<(), Error<E>> {
         let enable = self.enable.with_low(BitFlags::HEN);
         self.set_enable(enable)
+    }
+
+    /// Set the HRS conversion delay (waiting time between conversion cycles)
+    pub fn set_conversion_delay(&mut self, delay: ConversionDelay) -> Result<(), Error<E>> {
+        let delay_bits = match delay {
+            ConversionDelay::Ms800 => 0,
+            ConversionDelay::Ms400 => 1,
+            ConversionDelay::Ms200 => 2,
+            ConversionDelay::Ms100 => 3,
+            ConversionDelay::Ms75 => 4,
+            ConversionDelay::Ms50 => 5,
+            ConversionDelay::Ms12_5 => 6,
+            ConversionDelay::Ms0 => 7,
+        };
+        let bits = (self.enable.bits & !(7 << 4)) | (delay_bits << 4);
+        self.set_enable(Config { bits })
     }
 
     fn set_enable(&mut self, enable: Config) -> Result<(), Error<E>> {

@@ -1,6 +1,7 @@
 extern crate embedded_hal_mock as hal;
 extern crate hrs3300;
 use hal::i2c::Transaction as I2cTrans;
+use hrs3300::ConversionDelay;
 
 mod common;
 use common::{destroy, new, BitFlags as BF, Register as Reg, DEV_ADDR};
@@ -26,8 +27,27 @@ macro_rules! set_test {
     };
 }
 
-set_test!(can_enable_hrs, enable_hrs, ENABLE, BF::HEN);
-set_test!(can_disable_hrs, disable_hrs, ENABLE, 0);
+set_test!(enable_hrs, enable_hrs, ENABLE, BF::HEN);
+set_test!(disable_hrs, disable_hrs, ENABLE, 0);
+macro_rules! set_conv_delay_test {
+    ($name:ident, $arg:ident, $expected:expr) => {
+        set_test!(
+            $name,
+            set_conversion_delay,
+            ENABLE,
+            $expected,
+            ConversionDelay::$arg
+        );
+    };
+}
+set_conv_delay_test!(set_conv_delay_800, Ms800, 0);
+set_conv_delay_test!(set_conv_delay_400, Ms400, 1 << 4);
+set_conv_delay_test!(set_conv_delay_200, Ms200, 2 << 4);
+set_conv_delay_test!(set_conv_delay_100, Ms100, 3 << 4);
+set_conv_delay_test!(set_conv_delay_75, Ms75, 4 << 4);
+set_conv_delay_test!(set_conv_delay_50, Ms50, 5 << 4);
+set_conv_delay_test!(set_conv_delay_12_5, Ms12_5, 6 << 4);
+set_conv_delay_test!(set_conv_delay_0, Ms0, 7 << 4);
 
 macro_rules! get_test {
     ($name:ident, $method:ident, $register:ident, $value:expr, $expected:expr) => {
