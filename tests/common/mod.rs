@@ -6,6 +6,12 @@ pub const DEV_ADDR: u8 = 0x44;
 pub struct Register;
 impl Register {
     pub const ID: u8 = 0x00;
+    pub const ENABLE: u8 = 0x01;
+}
+
+pub struct BitFlags;
+impl BitFlags {
+    pub const HEN: u8 = 1 << 7;
 }
 
 pub fn new(transactions: &[I2cTrans]) -> Hrs3300<I2cMock> {

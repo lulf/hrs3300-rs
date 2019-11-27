@@ -49,6 +49,12 @@ pub enum Error<E> {
 pub struct Hrs3300<I2C> {
     /// The concrete I²C device implementation.
     i2c: I2C,
+    enable: Config,
+}
+
+#[derive(Debug, Default, Clone, Copy, PartialEq)]
+struct Config {
+    bits: u8,
 }
 
 mod device_impl;
