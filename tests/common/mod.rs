@@ -7,6 +7,7 @@ pub struct Register;
 impl Register {
     pub const ID: u8 = 0x00;
     pub const ENABLE: u8 = 0x01;
+    pub const HGAIN: u8 = 0x17;
 }
 
 pub struct BitFlags;

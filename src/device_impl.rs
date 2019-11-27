@@ -1,4 +1,4 @@
-use {hal, Config, ConversionDelay, Error, Hrs3300};
+use {hal, Config, ConversionDelay, Error, Gain, Hrs3300};
 
 const DEV_ADDR: u8 = 0x44;
 
@@ -6,6 +6,7 @@ struct Register;
 impl Register {
     const ID: u8 = 0x00;
     const ENABLE: u8 = 0x01;
+    const HGAIN: u8 = 0x17;
 }
 
 struct BitFlags;
@@ -71,6 +72,18 @@ where
         };
         let bits = (self.enable.bits & !(7 << 4)) | (delay_bits << 4);
         self.set_enable(Config { bits })
+    }
+
+    /// Set the HRS ADC gain
+    pub fn set_gain(&mut self, gain: Gain) -> Result<(), Error<E>> {
+        let bits = match gain {
+            Gain::One => 0,
+            Gain::Two => 1 << 2,
+            Gain::Four => 2 << 2,
+            Gain::Eight => 3 << 2,
+            Gain::SixtyFour => 4 << 2,
+        };
+        self.write_register(Register::HGAIN, bits)
     }
 
     fn set_enable(&mut self, enable: Config) -> Result<(), Error<E>> {

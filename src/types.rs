@@ -32,6 +32,27 @@ impl Default for ConversionDelay {
     }
 }
 
+/// HRS Gain
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum Gain {
+    /// 1x (default)
+    One,
+    /// 2x
+    Two,
+    /// 4x
+    Four,
+    /// 8x
+    Eight,
+    /// 64x
+    SixtyFour,
+}
+
+impl Default for Gain {
+    fn default() -> Self {
+        Gain::One
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -46,4 +67,5 @@ mod tests {
     }
 
     default_test!(default_conv_delay, ConversionDelay, Ms800);
+    default_test!(default_gain, Gain, One);
 }

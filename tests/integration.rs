@@ -1,7 +1,7 @@
 extern crate embedded_hal_mock as hal;
 extern crate hrs3300;
 use hal::i2c::Transaction as I2cTrans;
-use hrs3300::ConversionDelay;
+use hrs3300::{ConversionDelay, Gain};
 
 mod common;
 use common::{destroy, new, BitFlags as BF, Register as Reg, DEV_ADDR};
@@ -48,6 +48,12 @@ set_conv_delay_test!(set_conv_delay_75, Ms75, 4 << 4);
 set_conv_delay_test!(set_conv_delay_50, Ms50, 5 << 4);
 set_conv_delay_test!(set_conv_delay_12_5, Ms12_5, 6 << 4);
 set_conv_delay_test!(set_conv_delay_0, Ms0, 7 << 4);
+
+set_test!(set_gain_1, set_gain, HGAIN, 0, Gain::One);
+set_test!(set_gain_2, set_gain, HGAIN, 1 << 2, Gain::Two);
+set_test!(set_gain_4, set_gain, HGAIN, 2 << 2, Gain::Four);
+set_test!(set_gain_8, set_gain, HGAIN, 3 << 2, Gain::Eight);
+set_test!(set_gain_64, set_gain, HGAIN, 4 << 2, Gain::SixtyFour);
 
 macro_rules! get_test {
     ($name:ident, $method:ident, $register:ident, $value:expr, $expected:expr) => {
