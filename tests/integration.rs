@@ -1,7 +1,7 @@
 extern crate embedded_hal_mock as hal;
 extern crate hrs3300;
 use hal::i2c::Transaction as I2cTrans;
-use hrs3300::{ConversionDelay, Gain};
+use hrs3300::{AlsResolution as Res, ConversionDelay, Gain};
 
 mod common;
 use common::{destroy, new, BitFlags as BF, Register as Reg, DEV_ADDR};
@@ -54,6 +54,18 @@ set_test!(set_gain_2, set_gain, HGAIN, 1 << 2, Gain::Two);
 set_test!(set_gain_4, set_gain, HGAIN, 2 << 2, Gain::Four);
 set_test!(set_gain_8, set_gain, HGAIN, 3 << 2, Gain::Eight);
 set_test!(set_gain_64, set_gain, HGAIN, 4 << 2, Gain::SixtyFour);
+
+set_test!(set_als_res8, set_als_resolution, RESOLUTION, 0, Res::Bit8);
+set_test!(set_als_res9, set_als_resolution, RESOLUTION, 1, Res::Bit9);
+set_test!(set_als_res10, set_als_resolution, RESOLUTION, 2, Res::Bit10);
+set_test!(set_als_res11, set_als_resolution, RESOLUTION, 3, Res::Bit11);
+set_test!(set_als_res12, set_als_resolution, RESOLUTION, 4, Res::Bit12);
+set_test!(set_als_res13, set_als_resolution, RESOLUTION, 5, Res::Bit13);
+set_test!(set_als_res14, set_als_resolution, RESOLUTION, 6, Res::Bit14);
+set_test!(set_als_res15, set_als_resolution, RESOLUTION, 7, Res::Bit15);
+set_test!(set_als_res16, set_als_resolution, RESOLUTION, 8, Res::Bit16);
+set_test!(set_als_res17, set_als_resolution, RESOLUTION, 9, Res::Bit17);
+set_test!(set_alsres18, set_als_resolution, RESOLUTION, 10, Res::Bit18);
 
 macro_rules! get_test {
     ($name:ident, $method:ident, $register:ident, $value:expr, $expected:expr) => {

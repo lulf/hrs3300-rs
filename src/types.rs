@@ -53,6 +53,39 @@ impl Default for Gain {
     }
 }
 
+/// Ambient light sensor resolution
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum AlsResolution {
+    /// 8 bits
+    Bit8,
+    /// 9 bits
+    Bit9,
+    /// 10 bits
+    Bit10,
+    /// 11 bits
+    Bit11,
+    /// 12 bits
+    Bit12,
+    /// 13 bits
+    Bit13,
+    /// 14 bits
+    Bit14,
+    /// 15 bits
+    Bit15,
+    /// 16 bits
+    Bit16,
+    /// 17 bits
+    Bit17,
+    /// 18 bits
+    Bit18,
+}
+
+impl Default for AlsResolution {
+    fn default() -> Self {
+        AlsResolution::Bit8
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -68,4 +101,5 @@ mod tests {
 
     default_test!(default_conv_delay, ConversionDelay, Ms800);
     default_test!(default_gain, Gain, One);
+    default_test!(default_als_res, AlsResolution, Bit8);
 }

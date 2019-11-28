@@ -52,4 +52,4 @@ struct Config {
 
 mod device_impl;
 mod types;
-pub use types::{ConversionDelay, Error, Gain};
+pub use types::{AlsResolution, ConversionDelay, Error, Gain};
