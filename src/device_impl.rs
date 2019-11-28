@@ -181,7 +181,7 @@ where
 
         Ok(u32::from(data_0d_0e[1] & 7)
             | u32::from(data_08) << 3
-            | u32::from(data_0d_0e[0] & 0x7F) << 11)
+            | u32::from(data_0d_0e[0] & 0x3F) << 11)
     }
 
     fn read_register(&mut self, register: u8) -> Result<u8, Error<E>> {
