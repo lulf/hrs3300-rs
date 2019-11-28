@@ -56,7 +56,7 @@ impl Default for Gain {
 /// Ambient light sensor resolution
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum AlsResolution {
-    /// 8 bits
+    /// 8 bits (default)
     Bit8,
     /// 9 bits
     Bit9,
