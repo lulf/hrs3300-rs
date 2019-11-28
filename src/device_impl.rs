@@ -141,6 +141,19 @@ where
             | u32::from(data_0f & 0x30) << 12)
     }
 
+    /// Read ambient light sensor measurement (CH1)
+    pub fn read_als(&mut self) -> Result<u32, Error<E>> {
+        let data_08 = self.read_register(0x08)?;
+        let mut data_0d_0e = [0, 0];
+        self.i2c
+            .write_read(DEV_ADDR, &[0x0D], &mut data_0d_0e)
+            .map_err(Error::I2C)?;
+
+        Ok(u32::from(data_0d_0e[1] & 7)
+            | u32::from(data_08) << 3
+            | u32::from(data_0d_0e[0] & 0x7F) << 11)
+    }
+
     fn read_register(&mut self, register: u8) -> Result<u8, Error<E>> {
         let mut data = [0];
         self.i2c

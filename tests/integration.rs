@@ -97,3 +97,15 @@ fn can_read_hrs() {
     assert_eq!(0b10_1001_0110_1010_0101, result);
     destroy(sensor);
 }
+
+#[test]
+fn can_read_als() {
+    let transactions = [
+        I2cTrans::write_read(DEV_ADDR, vec![0x08], vec![0b1001_0110]),
+        I2cTrans::write_read(DEV_ADDR, vec![0x0D], vec![0b1010_1010, 0b1111_1101]),
+    ];
+    let mut sensor = new(&transactions);
+    let result = sensor.read_als().unwrap();
+    assert_eq!(0b01_0101_0100_1011_0101, result);
+    destroy(sensor);
+}
