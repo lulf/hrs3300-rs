@@ -127,6 +127,20 @@ where
         self.read_register(Register::ID)
     }
 
+    /// Read heart rate sensor measurement (CH0)
+    pub fn read_hrs(&mut self) -> Result<u32, Error<E>> {
+        let mut data_09_0a = [0, 0];
+        self.i2c
+            .write_read(DEV_ADDR, &[0x09], &mut data_09_0a)
+            .map_err(Error::I2C)?;
+        let data_0f = self.read_register(0x0F)?;
+
+        Ok(u32::from(data_0f & 0xF)
+            | u32::from((data_09_0a[1] & 0xF) << 4)
+            | u32::from(data_09_0a[0]) << 8
+            | u32::from(data_0f & 0x30) << 12)
+    }
+
     fn read_register(&mut self, register: u8) -> Result<u8, Error<E>> {
         let mut data = [0];
         self.i2c

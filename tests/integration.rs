@@ -85,3 +85,15 @@ macro_rules! get_test {
 }
 
 get_test!(can_get_dev_id, device_id, ID, 0x21, 0x21);
+
+#[test]
+fn can_read_hrs() {
+    let transactions = [
+        I2cTrans::write_read(DEV_ADDR, vec![0x09], vec![0b1001_0110, 0b1111_1010]),
+        I2cTrans::write_read(DEV_ADDR, vec![0x0F], vec![0b1110_0101]),
+    ];
+    let mut sensor = new(&transactions);
+    let result = sensor.read_hrs().unwrap();
+    assert_eq!(0b10_1001_0110_1010_0101, result);
+    destroy(sensor);
+}
