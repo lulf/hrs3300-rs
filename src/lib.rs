@@ -43,6 +43,7 @@ pub struct Hrs3300<I2C> {
     /// The concrete I²C device implementation.
     i2c: I2C,
     enable: Config,
+    pdriver: Config,
 }
 
 #[derive(Debug, Default, Clone, Copy, PartialEq)]
@@ -52,4 +53,4 @@ struct Config {
 
 mod device_impl;
 mod types;
-pub use types::{AlsResolution, ConversionDelay, Error, Gain};
+pub use types::{AlsResolution, ConversionDelay, Error, Gain, LedCurrent};

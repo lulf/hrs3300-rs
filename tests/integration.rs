@@ -1,7 +1,7 @@
 extern crate embedded_hal_mock as hal;
 extern crate hrs3300;
 use hal::i2c::Transaction as I2cTrans;
-use hrs3300::{AlsResolution as Res, ConversionDelay, Gain};
+use hrs3300::{AlsResolution as Res, ConversionDelay, Gain, LedCurrent};
 
 mod common;
 use common::{destroy, new, BitFlags as BF, Register as Reg, DEV_ADDR};
@@ -66,6 +66,26 @@ set_test!(set_als_res15, set_als_resolution, RESOLUTION, 7, Res::Bit15);
 set_test!(set_als_res16, set_als_resolution, RESOLUTION, 8, Res::Bit16);
 set_test!(set_als_res17, set_als_resolution, RESOLUTION, 9, Res::Bit17);
 set_test!(set_alsres18, set_als_resolution, RESOLUTION, 10, Res::Bit18);
+
+macro_rules! set_led_current_test {
+    ($name:ident, $led_current:ident, $enable:expr, $pdriver:expr) => {
+        #[test]
+        fn $name() {
+            let transactions = [
+                I2cTrans::write(DEV_ADDR, vec![Reg::ENABLE, $enable]),
+                I2cTrans::write(DEV_ADDR, vec![Reg::PDRIVER, $pdriver]),
+            ];
+            let mut sensor = new(&transactions);
+            sensor.set_led_current(LedCurrent::$led_current).unwrap();
+            destroy(sensor);
+        }
+    };
+}
+
+set_led_current_test!(set_led_curr_12_5, Ma12_5, 0, 0);
+set_led_current_test!(set_led_curr_20, Ma20, 0, BF::PDRIVE0);
+set_led_current_test!(set_led_curr_30, Ma30, BF::PDRIVE1, 0);
+set_led_current_test!(set_led_curr_40, Ma40, BF::PDRIVE1, BF::PDRIVE0);
 
 macro_rules! get_test {
     ($name:ident, $method:ident, $register:ident, $value:expr, $expected:expr) => {

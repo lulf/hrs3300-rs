@@ -7,6 +7,7 @@ pub struct Register;
 impl Register {
     pub const ID: u8 = 0x00;
     pub const ENABLE: u8 = 0x01;
+    pub const PDRIVER: u8 = 0x0C;
     pub const RESOLUTION: u8 = 0x16;
     pub const HGAIN: u8 = 0x17;
 }
@@ -14,6 +15,8 @@ impl Register {
 pub struct BitFlags;
 impl BitFlags {
     pub const HEN: u8 = 1 << 7;
+    pub const PDRIVE1: u8 = 1 << 3;
+    pub const PDRIVE0: u8 = 1 << 6;
 }
 
 pub fn new(transactions: &[I2cTrans]) -> Hrs3300<I2cMock> {

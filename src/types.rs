@@ -86,6 +86,25 @@ impl Default for AlsResolution {
     }
 }
 
+/// LED drive current
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum LedCurrent {
+    /// 12.5 mA (default)
+    Ma12_5,
+    /// 20 mA
+    Ma20,
+    /// 30 mA
+    Ma30,
+    /// 40 mA
+    Ma40,
+}
+
+impl Default for LedCurrent {
+    fn default() -> Self {
+        LedCurrent::Ma12_5
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -102,4 +121,5 @@ mod tests {
     default_test!(default_conv_delay, ConversionDelay, Ms800);
     default_test!(default_gain, Gain, One);
     default_test!(default_als_res, AlsResolution, Bit8);
+    default_test!(default_led_current, LedCurrent, Ma12_5);
 }

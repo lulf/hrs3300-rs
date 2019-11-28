@@ -1,4 +1,4 @@
-use {hal, AlsResolution, Config, ConversionDelay, Error, Gain, Hrs3300};
+use {hal, AlsResolution, Config, ConversionDelay, Error, Gain, Hrs3300, LedCurrent};
 
 const DEV_ADDR: u8 = 0x44;
 
@@ -6,6 +6,7 @@ struct Register;
 impl Register {
     const ID: u8 = 0x00;
     const ENABLE: u8 = 0x01;
+    const PDRIVER: u8 = 0x0C;
     const RESOLUTION: u8 = 0x16;
     const HGAIN: u8 = 0x17;
 }
@@ -13,6 +14,8 @@ impl Register {
 struct BitFlags;
 impl BitFlags {
     const HEN: u8 = 1 << 7;
+    const PDRIVE1: u8 = 1 << 3;
+    const PDRIVE0: u8 = 1 << 6;
 }
 
 impl Config {
@@ -34,6 +37,7 @@ impl<I2C> Hrs3300<I2C> {
         Hrs3300 {
             i2c,
             enable: Config { bits: 0 },
+            pdriver: Config { bits: 0 },
         }
     }
 
@@ -103,6 +107,32 @@ where
             AlsResolution::Bit18 => 10,
         };
         self.write_register(Register::RESOLUTION, bits)
+    }
+
+    /// Set the LED driver current
+    pub fn set_led_current(&mut self, current: LedCurrent) -> Result<(), Error<E>> {
+        let (enable, pdriver) = match current {
+            LedCurrent::Ma12_5 => (
+                self.enable.with_low(BitFlags::PDRIVE1),
+                self.pdriver.with_low(BitFlags::PDRIVE0),
+            ),
+            LedCurrent::Ma20 => (
+                self.enable.with_low(BitFlags::PDRIVE1),
+                self.pdriver.with_high(BitFlags::PDRIVE0),
+            ),
+            LedCurrent::Ma30 => (
+                self.enable.with_high(BitFlags::PDRIVE1),
+                self.pdriver.with_low(BitFlags::PDRIVE0),
+            ),
+            LedCurrent::Ma40 => (
+                self.enable.with_high(BitFlags::PDRIVE1),
+                self.pdriver.with_high(BitFlags::PDRIVE0),
+            ),
+        };
+        self.set_enable(enable)?;
+        self.write_register(Register::PDRIVER, pdriver.bits)?;
+        self.pdriver = pdriver;
+        Ok(())
     }
 
     fn set_enable(&mut self, enable: Config) -> Result<(), Error<E>> {
