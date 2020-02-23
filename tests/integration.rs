@@ -32,6 +32,10 @@ macro_rules! set_test {
 
 set_test!(enable_hrs, enable_hrs, ENABLE, BF::HEN);
 set_test!(disable_hrs, disable_hrs, ENABLE, 0);
+
+set_test!(enable_osc, enable_oscillator, PDRIVER, BF::OSC);
+set_test!(disable_osc, disable_oscillator, PDRIVER, 0);
+
 macro_rules! set_conv_delay_test {
     ($name:ident, $arg:ident, $expected:expr) => {
         set_test!(

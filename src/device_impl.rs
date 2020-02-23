@@ -16,6 +16,7 @@ impl BitFlags {
     const HEN: u8 = 1 << 7;
     const PDRIVE1: u8 = 1 << 3;
     const PDRIVE0: u8 = 1 << 6;
+    const OSC: u8 = 1 << 5;
 }
 
 impl<I2C> Hrs3300<I2C> {
@@ -52,6 +53,18 @@ where
     pub fn disable_hrs(&mut self) -> Result<(), Error<E>> {
         let enable = self.read_register(Register::ENABLE)?;
         self.write_register(Register::ENABLE, enable & !BitFlags::HEN)
+    }
+
+    /// Enable the oscillator.
+    pub fn enable_oscillator(&mut self) -> Result<(), Error<E>> {
+        let pdriver = self.read_register(Register::PDRIVER)?;
+        self.write_register(Register::PDRIVER, pdriver | BitFlags::OSC)
+    }
+
+    /// Enable the oscillator.
+    pub fn disable_oscillator(&mut self) -> Result<(), Error<E>> {
+        let pdriver = self.read_register(Register::PDRIVER)?;
+        self.write_register(Register::PDRIVER, pdriver & !BitFlags::OSC)
     }
 
     /// Set the HRS conversion delay (waiting time between conversion cycles)

@@ -17,6 +17,7 @@ impl BitFlags {
     pub const HEN: u8 = 1 << 7;
     pub const PDRIVE1: u8 = 1 << 3;
     pub const PDRIVE0: u8 = 1 << 6;
+    pub const OSC: u8 = 1 << 5;
 }
 
 pub fn new(transactions: &[I2cTrans]) -> Hrs3300<I2cMock> {
