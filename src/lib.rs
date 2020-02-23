@@ -3,9 +3,28 @@
 //!
 //! [`embedded-hal`]: https://github.com/rust-embedded/embedded-hal
 //!
-//! <!--
 //! This driver allows you to:
-//! -->
+//! - Enable/disable heart rate sensor. See: [`enable_hrs()`].
+//! - Enable/disable oscillator. See: [`enable_oscillator()`].
+//! - Initialize the device. See: [`init()`].
+//! - Set the conversion delay. See: [`set_conversion_delay()`].
+//! - Set the gain. See: [`set_gain()`].
+//! - Set the ambient light sensor resolution. See: [`set_als_resolution()`].
+//! - Set the LED current. See: [`set_led_current()`].
+//! - Read the device id. See: [`device_id()`].
+//! - Read the last heart rate sensor measurement. See: [`read_hrs()`].
+//! - Read the last ambient light sensor measurement. See: [`read_als()`].
+//!
+//! [`enable_hrs()`]: struct.Hrs3300.html#method.enable_hrs
+//! [`enable_oscillator()`]: struct.Hrs3300.html#method.enable_oscillator
+//! [`init()`]: struct.Hrs3300.html#method.init
+//! [`set_conversion_delay()`]: struct.Hrs3300.html#method.set_conversion_delay
+//! [`set_gain()`]: struct.Hrs3300.html#method.set_gain
+//! [`set_als_resolution()`]: struct.Hrs3300.html#method.set_als_resolution
+//! [`set_led_current()`]: struct.Hrs3300.html#method.set_led_current
+//! [`device_id()`]: struct.Hrs3300.html#method.device_id
+//! [`read_hrs()`]: struct.Hrs3300.html#method.read_hrs
+//! [`read_als()`]: struct.Hrs3300.html#method.read_als
 //!
 //! <!-- TODO
 //! [Introductory blog post](TODO)

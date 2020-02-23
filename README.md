@@ -10,9 +10,18 @@
 This is a platform agnostic Rust driver for the HRS3300 optical heart rate
 sensor using the [`embedded-hal`] traits.
 
-<!-- TODO
 This driver allows you to:
--->
+- Enable/disable heart rate sensor. See: `enable_hrs()`.
+- Enable/disable oscillator. See: `enable_oscillator()`.
+- Initialize the device. See: `init()`.
+- Set the conversion delay. See: `set_conversion_delay()`.
+- Set the gain. See: `set_gain()`.
+- Set the ambient light sensor resolution. See: `set_als_resolution()`.
+- Set the LED current. See: `set_led_current()`.
+- Read the device id. See: `device_id()`.
+- Read the last heart rate sensor measurement. See: `read_hrs()`.
+- Read the last ambient light sensor measurement. See: `read_als()`.
+
 <!-- TODO
 [Introductory blog post]()
 -->
