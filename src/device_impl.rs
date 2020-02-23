@@ -51,6 +51,13 @@ impl<I2C, E> Hrs3300<I2C>
 where
     I2C: hal::blocking::i2c::Write<Error = E>,
 {
+    /// Initialize the status of registers
+    pub fn init(&mut self) -> Result<(), Error<E>> {
+        self.write_register(Register::ENABLE, 0x68)?;
+        self.write_register(Register::PDRIVER, 0x0e)?;
+        self.write_register(Register::RESOLUTION, 0x66)?;
+        self.write_register(Register::HGAIN, 0x0d)
+    }
     /// Enable the heart-rate sensor (HRS).
     pub fn enable_hrs(&mut self) -> Result<(), Error<E>> {
         let enable = self.enable.with_high(BitFlags::HEN);

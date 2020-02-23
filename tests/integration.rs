@@ -129,3 +129,16 @@ fn can_read_als() {
     assert_eq!(0b01_0101_0100_1011_0101, result);
     destroy(sensor);
 }
+
+#[test]
+fn can_init() {
+    let transactions = [
+        I2cTrans::write(DEV_ADDR, vec![Reg::ENABLE, 0x68]),
+        I2cTrans::write(DEV_ADDR, vec![Reg::PDRIVER, 0x0e]),
+        I2cTrans::write(DEV_ADDR, vec![Reg::RESOLUTION, 0x66]),
+        I2cTrans::write(DEV_ADDR, vec![Reg::HGAIN, 0x0d]),
+    ];
+    let mut sensor = new(&transactions);
+    sensor.init().unwrap();
+    destroy(sensor);
+}
