@@ -41,16 +41,49 @@
 //! Datasheet:
 //! - [HRS3300](http://files.pine64.org/doc/datasheet/pinetime/HRS3300%20Heart%20Rate%20Sensor.pdf)
 //!
-//! <!--
 //! ## Usage examples (see also examples folder)
 //!
 //! To use this driver, import this crate and an `embedded_hal` implementation,
 //! then instantiate the appropriate device.
 //!
-//! Please find additional examples using hardware in this repository: [driver-examples]
+//! ### Initialize the device and take some measurements
 //!
-//! [driver-examples]: https://github.com/eldruin/driver-examples
-//! -->
+//! ```no_run
+//! extern crate linux_embedded_hal as hal;
+//! extern crate hrs3300;
+//! use hrs3300::Hrs3300;
+//!
+//! # fn main() {
+//! let dev = hal::I2cdev::new("/dev/i2c-1").unwrap();
+//! let mut sensor = Hrs3300::new(dev);
+//! sensor.init().unwrap();
+//! sensor.enable_hrs().unwrap();
+//! sensor.enable_oscillator().unwrap();
+//! loop {
+//!     let hrs = sensor.read_hrs().unwrap();
+//!     let als = sensor.read_als().unwrap();
+//!     println!("HRS: {}, ALS: {}", hrs, als);
+//! }
+//! # }
+//! ```
+//!
+//! ### Change the parameters
+//!
+//! ```no_run
+//! extern crate linux_embedded_hal as hal;
+//! extern crate hrs3300;
+//! use hrs3300::{ConversionDelay, Gain, Hrs3300, LedCurrent};
+//!
+//! # fn main() {
+//! let dev = hal::I2cdev::new("/dev/i2c-1").unwrap();
+//! let mut sensor = Hrs3300::new(dev);
+//! sensor.init().unwrap();
+//! sensor.set_gain(Gain::Four).unwrap();
+//! sensor.set_conversion_delay(ConversionDelay::Ms50).unwrap();
+//! sensor.set_led_current(LedCurrent::Ma20).unwrap();
+//! # }
+//! ```
+
 #![deny(unsafe_code, missing_docs)]
 #![no_std]
 

@@ -37,20 +37,29 @@ The typical heart rate measurement samples the reflected PPG signal at
 Datasheet:
 - [HRS3300](http://files.pine64.org/doc/datasheet/pinetime/HRS3300%20Heart%20Rate%20Sensor.pdf)
 
-<!-- TODO
 ## Usage
 
 To use this driver, import this crate and an `embedded_hal` implementation,
 then instantiate the device.
 
-Please find additional examples using hardware in this repository: [driver-examples]
-
-[driver-examples]: https://github.com/eldruin/driver-examples
-
 ```rust
-...
+extern crate hrs3300;
+extern crate linux_embedded_hal as hal;
+use hrs3300::Hrs3300;
+
+fn main() {
+    let dev = hal::I2cdev::new("/dev/i2c-1").unwrap();
+    let mut sensor = Hrs3300::new(dev);
+    sensor.init().unwrap();
+    sensor.enable_hrs().unwrap();
+    sensor.enable_oscillator().unwrap();
+    loop {
+        let hrs = sensor.read_hrs().unwrap();
+        let als = sensor.read_als().unwrap();
+        println!("HRS: {}, ALS: {}", hrs, als);
+    }
+}
 ```
--->
 
 ## Support
 
