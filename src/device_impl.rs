@@ -1,4 +1,4 @@
-use {hal, AlsResolution, Config, ConversionDelay, Error, Gain, Hrs3300, LedCurrent};
+use {hal, AlsResolution, ConversionDelay, Error, Gain, Hrs3300, LedCurrent};
 
 const DEV_ADDR: u8 = 0x44;
 
@@ -18,27 +18,10 @@ impl BitFlags {
     const PDRIVE0: u8 = 1 << 6;
 }
 
-impl Config {
-    fn with_high(self, mask: u8) -> Self {
-        Config {
-            bits: self.bits | mask,
-        }
-    }
-    fn with_low(self, mask: u8) -> Self {
-        Config {
-            bits: self.bits & !mask,
-        }
-    }
-}
-
 impl<I2C> Hrs3300<I2C> {
     /// Create new instance of the HRS3300 device.
     pub fn new(i2c: I2C) -> Self {
-        Hrs3300 {
-            i2c,
-            enable: Config { bits: 0 },
-            pdriver: Config { bits: 0 },
-        }
+        Hrs3300 { i2c }
     }
 
     /// Destroy driver instance, return I²C bus instance.
@@ -49,7 +32,7 @@ impl<I2C> Hrs3300<I2C> {
 
 impl<I2C, E> Hrs3300<I2C>
 where
-    I2C: hal::blocking::i2c::Write<Error = E>,
+    I2C: hal::blocking::i2c::Write<Error = E> + hal::blocking::i2c::WriteRead<Error = E>,
 {
     /// Initialize the status of registers
     pub fn init(&mut self) -> Result<(), Error<E>> {
@@ -58,16 +41,17 @@ where
         self.write_register(Register::RESOLUTION, 0x66)?;
         self.write_register(Register::HGAIN, 0x0d)
     }
+
     /// Enable the heart-rate sensor (HRS).
     pub fn enable_hrs(&mut self) -> Result<(), Error<E>> {
-        let enable = self.enable.with_high(BitFlags::HEN);
-        self.set_enable(enable)
+        let enable = self.read_register(Register::ENABLE)?;
+        self.write_register(Register::ENABLE, enable | BitFlags::HEN)
     }
 
     /// Disable the heart-rate sensor (HRS).
     pub fn disable_hrs(&mut self) -> Result<(), Error<E>> {
-        let enable = self.enable.with_low(BitFlags::HEN);
-        self.set_enable(enable)
+        let enable = self.read_register(Register::ENABLE)?;
+        self.write_register(Register::ENABLE, enable & !BitFlags::HEN)
     }
 
     /// Set the HRS conversion delay (waiting time between conversion cycles)
@@ -82,8 +66,9 @@ where
             ConversionDelay::Ms12_5 => 6,
             ConversionDelay::Ms0 => 7,
         };
-        let bits = (self.enable.bits & !(7 << 4)) | (delay_bits << 4);
-        self.set_enable(Config { bits })
+        let enable = self.read_register(Register::ENABLE)?;
+        let enable = (enable & !(7 << 4)) | (delay_bits << 4);
+        self.write_register(Register::ENABLE, enable)
     }
 
     /// Set the HRS ADC gain
@@ -95,7 +80,9 @@ where
             Gain::Eight => 3 << 2,
             Gain::SixtyFour => 4 << 2,
         };
-        self.write_register(Register::HGAIN, bits)
+        let hgain = self.read_register(Register::HGAIN)?;
+        let hgain = (hgain & !(0b11 << 2)) | bits;
+        self.write_register(Register::HGAIN, hgain)
     }
 
     /// Set the ambient light sensor ADC resolution
@@ -113,52 +100,26 @@ where
             AlsResolution::Bit17 => 9,
             AlsResolution::Bit18 => 10,
         };
-        self.write_register(Register::RESOLUTION, bits)
+        let res = self.read_register(Register::RESOLUTION)?;
+        let res = (res & 0xF0) | bits;
+        self.write_register(Register::RESOLUTION, res)
     }
 
     /// Set the LED driver current
     pub fn set_led_current(&mut self, current: LedCurrent) -> Result<(), Error<E>> {
+        let enable = self.read_register(Register::ENABLE)?;
+        let pdriver = self.read_register(Register::PDRIVER)?;
         let (enable, pdriver) = match current {
-            LedCurrent::Ma12_5 => (
-                self.enable.with_low(BitFlags::PDRIVE1),
-                self.pdriver.with_low(BitFlags::PDRIVE0),
-            ),
-            LedCurrent::Ma20 => (
-                self.enable.with_low(BitFlags::PDRIVE1),
-                self.pdriver.with_high(BitFlags::PDRIVE0),
-            ),
-            LedCurrent::Ma30 => (
-                self.enable.with_high(BitFlags::PDRIVE1),
-                self.pdriver.with_low(BitFlags::PDRIVE0),
-            ),
-            LedCurrent::Ma40 => (
-                self.enable.with_high(BitFlags::PDRIVE1),
-                self.pdriver.with_high(BitFlags::PDRIVE0),
-            ),
+            LedCurrent::Ma12_5 => (enable & !BitFlags::PDRIVE1, pdriver & !BitFlags::PDRIVE0),
+            LedCurrent::Ma20 => (enable & !BitFlags::PDRIVE1, pdriver | BitFlags::PDRIVE0),
+            LedCurrent::Ma30 => (enable | BitFlags::PDRIVE1, pdriver & !BitFlags::PDRIVE0),
+            LedCurrent::Ma40 => (enable | BitFlags::PDRIVE1, pdriver | BitFlags::PDRIVE0),
         };
-        self.set_enable(enable)?;
-        self.write_register(Register::PDRIVER, pdriver.bits)?;
-        self.pdriver = pdriver;
-        Ok(())
+
+        self.write_register(Register::ENABLE, enable)?;
+        self.write_register(Register::PDRIVER, pdriver)
     }
 
-    fn set_enable(&mut self, enable: Config) -> Result<(), Error<E>> {
-        self.write_register(Register::ENABLE, enable.bits)?;
-        self.enable = enable;
-        Ok(())
-    }
-
-    fn write_register(&mut self, register: u8, value: u8) -> Result<(), Error<E>> {
-        self.i2c
-            .write(DEV_ADDR, &[register, value])
-            .map_err(Error::I2C)
-    }
-}
-
-impl<I2C, E> Hrs3300<I2C>
-where
-    I2C: hal::blocking::i2c::WriteRead<Error = E>,
-{
     /// Read the device ID (0x21).
     pub fn device_id(&mut self) -> Result<u8, Error<E>> {
         self.read_register(Register::ID)
@@ -189,6 +150,12 @@ where
         Ok(u32::from(data_0d_0e[1] & 7)
             | u32::from(data_08) << 3
             | u32::from(data_0d_0e[0] & 0x3F) << 11)
+    }
+
+    fn write_register(&mut self, register: u8, value: u8) -> Result<(), Error<E>> {
+        self.i2c
+            .write(DEV_ADDR, &[register, value])
+            .map_err(Error::I2C)
     }
 
     fn read_register(&mut self, register: u8) -> Result<u8, Error<E>> {

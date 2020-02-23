@@ -16,7 +16,10 @@ macro_rules! set_test {
     ($name:ident, $method:ident, $register:ident, $value:expr $(, $arg:expr)*) => {
         #[test]
         fn $name() {
-            let transactions = [I2cTrans::write(
+            let transactions = [I2cTrans::write_read(
+                DEV_ADDR,
+                vec![Reg::$register], vec![0],
+            ),I2cTrans::write(
                 DEV_ADDR,
                 vec![Reg::$register, $value],
             )];
@@ -72,6 +75,8 @@ macro_rules! set_led_current_test {
         #[test]
         fn $name() {
             let transactions = [
+                I2cTrans::write_read(DEV_ADDR, vec![Reg::ENABLE], vec![0]),
+                I2cTrans::write_read(DEV_ADDR, vec![Reg::PDRIVER], vec![0]),
                 I2cTrans::write(DEV_ADDR, vec![Reg::ENABLE, $enable]),
                 I2cTrans::write(DEV_ADDR, vec![Reg::PDRIVER, $pdriver]),
             ];
