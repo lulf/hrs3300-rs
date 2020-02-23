@@ -5,7 +5,9 @@ use hrs3300::Hrs3300;
 fn main() {
     let dev = hal::I2cdev::new("/dev/i2c-1").unwrap();
     let mut sensor = Hrs3300::new(dev);
+    sensor.init().unwrap();
     sensor.enable_hrs().unwrap();
+    sensor.enable_oscillator().unwrap();
     loop {
         let hrs = sensor.read_hrs().unwrap();
         let als = sensor.read_als().unwrap();
