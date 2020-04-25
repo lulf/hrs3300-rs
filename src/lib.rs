@@ -14,6 +14,7 @@
 //! - Read the device id. See: [`device_id()`].
 //! - Read the last heart rate sensor measurement. See: [`read_hrs()`].
 //! - Read the last ambient light sensor measurement. See: [`read_als()`].
+//! - Write/Read a register with a custom value. See: [`write_register()`].
 //!
 //! [`enable_hrs()`]: struct.Hrs3300.html#method.enable_hrs
 //! [`enable_oscillator()`]: struct.Hrs3300.html#method.enable_oscillator
@@ -25,6 +26,7 @@
 //! [`device_id()`]: struct.Hrs3300.html#method.device_id
 //! [`read_hrs()`]: struct.Hrs3300.html#method.read_hrs
 //! [`read_als()`]: struct.Hrs3300.html#method.read_als
+//! [`write_register()`]: struct.Hrs3300.html#method.write_register
 //!
 //! <!-- TODO
 //! [Introductory blog post](TODO)

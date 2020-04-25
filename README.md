@@ -21,6 +21,7 @@ This driver allows you to:
 - Read the device id. See: `device_id()`.
 - Read the last heart rate sensor measurement. See: `read_hrs()`.
 - Read the last ambient light sensor measurement. See: `read_als()`.
+- Write/Read a register with a custom value. See: `write_register()`.
 
 <!-- TODO
 [Introductory blog post]()

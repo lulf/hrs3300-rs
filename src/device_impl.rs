@@ -36,6 +36,9 @@ where
     I2C: hal::blocking::i2c::Write<Error = E> + hal::blocking::i2c::WriteRead<Error = E>,
 {
     /// Initialize the status of registers
+    ///
+    /// A custom initialization can also be achieved using `write_register()`
+    /// directly.
     pub fn init(&mut self) -> Result<(), Error<E>> {
         self.write_register(Register::ENABLE, 0x68)?;
         self.write_register(Register::PDRIVER, 0x0e)?;
@@ -165,13 +168,17 @@ where
             | u32::from(data_0d_0e[0] & 0x3F) << 11)
     }
 
-    fn write_register(&mut self, register: u8, value: u8) -> Result<(), Error<E>> {
+    /// Custom register write.
+    ///
+    /// This can be used to do a custom initialization, for example.
+    pub fn write_register(&mut self, register: u8, value: u8) -> Result<(), Error<E>> {
         self.i2c
             .write(DEV_ADDR, &[register, value])
             .map_err(Error::I2C)
     }
 
-    fn read_register(&mut self, register: u8) -> Result<u8, Error<E>> {
+    /// Custom register read.
+    pub fn read_register(&mut self, register: u8) -> Result<u8, Error<E>> {
         let mut data = [0];
         self.i2c
             .write_read(DEV_ADDR, &[register], &mut data)
