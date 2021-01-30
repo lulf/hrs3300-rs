@@ -2,7 +2,7 @@
 
 [![crates.io](https://img.shields.io/crates/v/hrs3300.svg)](https://crates.io/crates/hrs3300)
 [![Docs](https://docs.rs/hrs3300/badge.svg)](https://docs.rs/hrs3300)
-[![Build Status](https://travis-ci.org/eldruin/hrs3300-rs.svg?branch=master)](https://travis-ci.org/eldruin/hrs3300-rs)
+[![Build Status](https://github.com/eldruin/hrs3300-rs/workflows/Build/badge.svg)](https://github.com/eldruin/hrs3300-rs/actions?query=workflow%3ABuild)
 [![Coverage Status](https://coveralls.io/repos/github/eldruin/hrs3300-rs/badge.svg?branch=master)](https://coveralls.io/github/eldruin/hrs3300-rs?branch=master)
 
 This is a platform agnostic Rust driver for the HRS3300 optical heart rate
