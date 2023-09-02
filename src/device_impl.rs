@@ -33,7 +33,7 @@ impl<I2C> Hrs3300<I2C> {
 
 impl<I2C, E> Hrs3300<I2C>
 where
-    I2C: hal::blocking::i2c::Write<Error = E> + hal::blocking::i2c::WriteRead<Error = E>,
+    I2C: hal::i2c::I2c<Error = E>,
 {
     /// Initialize the status of registers
     ///
